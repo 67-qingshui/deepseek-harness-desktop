@@ -1,0 +1,26 @@
+appId: com.deepseekharness.desktop
+productName: DeepSeek Harness Desktop
+artifactName: DeepSeek-Harness-Desktop-${version}-${arch}.${ext}
+directories:
+  output: release
+  buildResources: assets
+files:
+  - src/**/*
+  - assets/**
+  - package.json
+mac:
+  category: public.app-category.developer-tools
+  icon: assets/icon.icns
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  target:
+    - target: dmg
+      arch: [arm64]
+    - target: zip
+      arch: [arm64]
+win:
+  icon: assets/icon.ico
+  target: [nsis]
+linux:
+  target: [AppImage, deb]
+  category: Development

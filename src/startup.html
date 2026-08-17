@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DeepSeek Harness</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(120% 120% at 50% 0%, #122036 0%, #0b1120 100%);
+        color: #e8eefc;
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .box {
+        text-align: center;
+      }
+      .logo {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 18px;
+        animation: float 2.4s ease-in-out infinite;
+      }
+      .title {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+      .sub {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #8ea2c0;
+      }
+      .spinner {
+        margin: 22px auto 0;
+        width: 26px;
+        height: 26px;
+        border: 3px solid rgba(255, 255, 255, 0.15);
+        border-top-color: #4aa8ff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <svg class="logo" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M8 38c10-14 34-20 46-10 4 3 4 9-1 11-7 3-14 1-20-2-2 6-9 10-17 9-5-1-8-5-8-8z"
+          fill="#4aa8ff"
+        />
+        <path d="M50 30l6-8 1 9-7 3z" fill="#4aa8ff" />
+        <circle cx="20" cy="34" r="1.8" fill="#0b1120" />
+      </svg>
+      <div class="title">DeepSeek Harness</div>
+      <div class="sub">正在启动本地服务…</div>
+      <div class="spinner"></div>
+    </div>
+  </body>
+</html>

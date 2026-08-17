@@ -1,0 +1,28 @@
+{
+  "name": "deepseek-harness-desktop",
+  "version": "1.0.0",
+  "description": "极简桌面壳：把 DeepSeek Harness 的 Web UI 装进原生窗口，自动启停本地服务，轻量开箱即用。",
+  "type": "module",
+  "main": "src/main.js",
+  "author": "DeepSeek Harness Desktop Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steven-kid/deepseek-harness-desktop"
+  },
+  "scripts": {
+    "start": "electron .",
+    "icons": "node scripts/gen-icons.js",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac --arm64 --publish never",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "dist:linux": "electron-builder --linux --x64 --publish never"
+  },
+  "dependencies": {
+    "tree-kill": "^1.2.2"
+  },
+  "devDependencies": {
+    "electron": "43.4.0",
+    "electron-builder": "26.0.12"
+  }
+}
