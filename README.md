@@ -1,116 +1,153 @@
-# DeepSeek Harness Desktop
+<h1 align="center">
+  <img src="assets/icon.png" width="72" alt="DeepSeek Harness Desktop" />
+  <br />
+  DeepSeek Harness Desktop
+</h1>
 
-把 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Web UI 装进原生桌面窗口——自动启停本地服务，**开箱即用，无需预装 Node.js**。支持自定义背景与字体颜色、Token 用量统计。
+<p align="center">
+  把 <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a> 的 Web UI 装进原生桌面窗口——自动启停本地服务，开箱即用，支持自定义背景与 Token 用量统计。
+</p>
 
----
+<p align="center">
+  <a href="https://github.com/67-qingshui/deepseek-harness-desktop/releases/latest"><img alt="Latest release" src="https://img.shields.io/badge/version-v2.0.0-0b1120?style=flat-square" /></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-0b1120.svg?style=flat-square" /></a>
+  <img alt="macOS" src="https://img.shields.io/badge/macOS-Apple%20Silicon-0b1120.svg?style=flat-square" />
+  <img alt="Windows" src="https://img.shields.io/badge/Windows-x64-0b1120.svg?style=flat-square" />
+  <img alt="Linux" src="https://img.shields.io/badge/Linux-x64-0b1120.svg?style=flat-square" />
+</p>
+
+DeepSeek Harness Desktop 把官方 DeepSeek Harness 的 Web 体验打包为独立桌面应用，免去手动启动 CLI 与管理本地端口，同时保留完整的 Harness 界面与能力。
+
+本项目聚焦桌面宿主，不分叉、不修改、不注入 Harness UI——模型、会话、设置、插件与 Agent 能力仍由官方 `@deepseek-ai/dsh` 提供。在此基础上增加了自定义背景与字体颜色、Token 用量统计两项增强。
+
+> [!IMPORTANT]
+> 非官方社区封装，依赖快速演进的 `@deepseek-ai/dsh@0.1.0-rc.7`。macOS 构建未做 Apple 公证。
 
 ## 下载
 
-三个版本均可**独立使用**，任选其一。高版本包含低版本全部功能。
+三个版本均可独立使用，高版本包含低版本全部功能。
 
 | 版本 | 特色 | 下载 |
-|---|---|---|
-| **v1.0.0 纯净版** | 极简宿主壳，零自定义 | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v1.0.0/DeepSeek-Harness-Desktop-1.0.0-arm64.dmg) |
-| **v1.1.0 DIY 背景版** | 自定义背景图片与字体颜色 | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v1.1.0/DeepSeek-Harness-Desktop-1.1.0-arm64.dmg) |
-| **v2.0.0 用量统计版** | 在 v1.1.0 基础上增加 Token 用量统计 | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v2.0.0/DeepSeek-Harness-Desktop-2.0.0-arm64.dmg) |
+| --- | --- | --- |
+| v1.0.0 纯净版 | 极简宿主壳，零自定义 | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v1.0.0/DeepSeek-Harness-Desktop-1.0.0-arm64.dmg) |
+| v1.1.0 DIY 背景版 | 自定义背景图片与字体颜色 | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v1.1.0/DeepSeek-Harness-Desktop-1.1.0-arm64.dmg) |
+| v2.0.0 用量统计版 | 增加 Token 用量统计（最新） | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v2.0.0/DeepSeek-Harness-Desktop-2.0.0-arm64.dmg) |
 
-> macOS 未公证，首次打开需在「系统设置 → 隐私与安全性」点击「仍要打开」。不确定选哪个就下 **v2.0.0**。
+所有版本均可在 [Releases 页](https://github.com/67-qingshui/deepseek-harness-desktop/releases) 查看。不确定选哪个就下 v2.0.0。
 
----
+## 为什么有这个项目
 
-## 核心功能
+DeepSeek Harness 已提供完整的 Agent 运行时与 Web UI，本项目补齐桌面产品所需的宿主能力：
 
-**所有版本共有**
-- **自包含运行时**——dsh 内嵌进应用，由自带 Electron 运行，无需系统 Node，离线可用
-- **自动启停**——启动拉起 dsh（仅 `127.0.0.1`），退出 tree-kill 回收子进程树
-- **单实例 + 关闭到托盘**——重复打开只唤出已有窗口；关窗缩到托盘不退出
-- **安全沙箱**——contextIsolation + sandbox，跨域跳转走系统浏览器
+- 自动启停本地 Harness 服务
+- 分配随机 `127.0.0.1` 回环端口
+- 服务就绪后再显示窗口，就绪前展示加载页
+- 单实例窗口与安全的跨域导航
+- 开启沙箱、`contextIsolation`、导航限制
+- 打包可安装的 macOS / Windows / Linux 产物
+- 自定义背景与字体颜色（v1.1.0+）
+- Token 用量统计（v2.0.0）
 
-**v1.1.0+ 新增**
-- **自定义背景**——上传本地图片 / 6 套预设渐变，可调不透明度与模糊，自动适配分辨率
-- **自定义字体颜色**——颜色选择器自由调色 / 7 套预设方案
-- **快速配色**——一键切换协调的背景+字体组合
+## 功能
+
+**所有版本**
+- 服务就绪后自动载入官方 Harness 界面
+- 服务启动期间显示轻量加载页
+- 关闭窗口时驻留系统托盘，可随时唤出
+- 退出时优雅终止 Harness 子进程
+- 仅监听随机本地回环端口
+- macOS 标题栏与 Harness 深浅色主题融合
+- 自包含运行时：dsh 内嵌进应用，由自带 Electron 运行，**无需预装 Node.js**
+
+**v1.1.0+**
+- 自定义背景图片：上传本地图片 / 6 套预设渐变，可调不透明度与模糊
+- 自定义字体颜色：颜色选择器自由调色 / 7 套预设方案
+- 快速配色：一键切换协调的背景+字体组合
 - 入口：托盘「设置…」或 `⌘ ,`，实时生效
 
-**v2.0.0 新增**
-- **Token 用量统计**——自动采集 API 响应 `usage` 字段（参考[官方计费规则](https://api-docs.deepseek.com/zh-cn/quick_start/pricing)）
+**v2.0.0**
+- 自动采集 API 响应 `usage` 字段（参考[官方计费规则](https://api-docs.deepseek.com/zh-cn/quick_start/pricing)）
 - 统计输入/输出/缓存命中 Token、调用次数、缓存命中率、估算费用
 - 可视化：折线图趋势 + 柱状图占比 + 明细列表，5 秒自动刷新
 - 入口：托盘「用量统计…」
 
----
+## 安装
 
-## 快速开始
+### macOS
 
-### 安装
+构建未做 Apple 公证，首次启动：
 
-下载 dmg → 拖入 Applications → 打开。无需任何环境。
+1. 打开 DMG，将 **DeepSeek Harness Desktop** 拖入 **Applications**。
+2. 尝试打开应用；若 macOS 拦截，点击**完成**。
+3. 打开**系统设置 → 隐私与安全性**。
+4. 在**安全性**区域找到该应用，点击**仍要打开**。
+5. 再次确认点击**打开**。
 
-从源码开发：`git clone` → `npm install` → `npm start`（需 Node.js ≥ 18）。
+通常只需确认一次。
 
-### 首次使用（必读）
+### Windows / Linux
 
-**需先配置 API Key 才能调用模型功能：**
+当前 Release 仅提供 macOS arm64 预编译包。Windows / Linux 可从源码自行打包：
 
-1. 在 [DeepSeek 开放平台](https://platform.deepseek.com) 创建 API Key（`sk-` 开头，仅创建时单次展示，立即保存）
-2. 打开本应用，在 Harness Web UI 的**设置页**填入 API Key
+```bash
+npm install
+npm run dist:win    # Windows x64 NSIS
+npm run dist:linux  # Linux x64 AppImage + deb
+```
 
-> **安全说明**：API Key 由 dsh 在本地管理，本客户端**不收集、不存储、不上传** Key 内容，对开发者不可见。
->
+## 首次使用（API Key）
+
+调用模型功能前需配置 API Key：
+
+1. 在 [DeepSeek 开放平台](https://platform.deepseek.com) 创建 API Key（`sk-` 开头，仅创建时单次展示）
+2. 打开本应用，在 Harness Web UI 的**设置页**填入
+
+> [!NOTE]
+> **安全**：API Key 由 dsh 在本地管理，本客户端不收集、不存储、不上传，对开发者不可见。
 > **多客户端**：同一账号的 Key 可在多个客户端直接使用，无需重复添加。建议按客户端分别创建 Key 并标记名称（如 `desktop-mac`），方便官方后台按渠道统计用量。
 
----
+## 安全模型
 
-## 配置
+- Harness 仅绑定 `127.0.0.1` 随机端口
+- 渲染进程禁用 Node.js 集成
+- 启用 `contextIsolation` 与 Chromium 沙箱
+- 新窗口与跨域导航交给系统浏览器
+- Harness 运行在独立子进程，退出时 tree-kill 回收
 
-用户设置持久化于 `userData/settings.json`，通过设置窗口配置。
+## 运行时架构
 
-| 配置项 | 默认值 | 说明 |
-|---|---|---|
-| `background.type` | `none` | 背景类型：`none`/`preset`/`image` |
-| `background.opacity` | `0.85` | 不透明度 0–1 |
-| `background.blur` | `0` | 模糊 0–40px |
-| `textColor.enabled` | `false` | 是否启用自定义字体颜色 |
-| `usage.records` | `[]` | Token 用量记录（最多 5000 条） |
-
-dsh 启动命令（`src/dsh-service.js` 的 `buildDshLaunch()`）：默认用应用自带 Electron 跑内嵌 dsh，无需系统 Node。
-
----
-
-## 版本日志
-
-| 版本 | 日期 | 变更 |
-|---|---|---|
-| **v2.0.0** | 2026-08-18 | Token 用量统计（大版本号升级） |
-| **v1.1.0** | 2026-08-18 | 自定义背景图片与字体颜色 |
-| **v1.0.0** | 2026-08-18 | 首个正式版，极简宿主壳 |
-
-完整变更见 [CHANGELOG.md](CHANGELOG.md)。
-
----
+```text
+DeepSeek Harness Desktop
+├── Electron Main
+│   ├── 单实例窗口
+│   ├── Harness 子进程生命周期
+│   ├── 随机回环端口与就绪检测
+│   ├── 托盘 / 设置窗口 / 用量统计窗口
+│   └── 外部链接与跨域导航处理
+│
+├── Harness Child Process
+│   └── @deepseek-ai/dsh web
+│       └── http://127.0.0.1:<random-port>
+│
+└── Sandboxed BrowserWindow
+    └── DeepSeek Harness Web UI
+        └── usage-inject.cjs（hook fetch/XHR 采集 Token 用量）
+```
 
 ## 已知限制
 
-- macOS 预编译包仅 arm64；Windows/Linux 需从源码打包
-- 未做 Apple 公证，首次打开需手动放行
+- 上游 dsh 仍为 RC 版本，可能快速变化
+- 未集成 Apple Developer ID 签名与公证
+- 当前 Release 仅提供 macOS arm64 预编译包
 - 用量费用为估算，以官方账单为准
-- 内嵌 dsh 为预发布版（`0.1.0-rc.7`），可能随上游演进
+- 未集成自动更新
+
+## License
+
+桌面壳基于 [MIT License](LICENSE) 开源。内嵌的 `@deepseek-ai/dsh` 同为 MIT 许可。
+
+本项目与 DeepSeek 官方无隶属关系。DeepSeek Harness 及相关名称归各自所有者所有。
 
 ---
-
-## 模块结构
-
-```
-src/        main.js · window.js · tray.js · dsh-service.js
-            store.js · skin-manager.js · settings-window.js
-            usage-tracker.js · usage-window.js
-settings/   设置窗口界面
-usage/      用量统计界面
-*.cjs       preload 桥接（settings/main/usage-inject/usage）
-```
-
----
-
-*MIT License · 非官方社区封装，与 DeepSeek 官方无关联*
 
 *本文档随官方更新与功能迭代持续同步，如有过时请[反馈](https://github.com/67-qingshui/deepseek-harness-desktop/issues)。*
