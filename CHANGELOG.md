@@ -60,4 +60,4 @@
 
 - 极简桌面壳，自动启停本地 DeepSeek Harness 服务
 - 自包含运行时（内嵌 dsh，无需系统 Node.js）
-- 单实例窗口、关闭到托盘、安全沙箱、跨平台
+- 单实例窗口、关闭到托盘、安全沙箱（仅 macOS Apple Silicon）

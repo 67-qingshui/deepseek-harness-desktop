@@ -43,7 +43,7 @@ DeepSeek Harness Desktop 提供两个版本，满足不同需求。请根据自�
 | 关闭到托盘 | 关闭=最小化到托盘，可随时唤出/退出 |
 | macOS 原生标题栏 | 隐藏原生标题栏，叠加控件自适应深浅色 |
 | 安全沙箱 | `contextIsolation` + `sandbox` + 禁用 Node 集成，跨域跳转走系统浏览器 |
-| 跨平台 | macOS arm64 / Windows x64 / Linux x64 |
+| 平台支持 | 仅 macOS Apple Silicon（M 系列芯片） |
 
 ### v1.0.0 纯净版 — 功能特点
 

@@ -11,9 +11,8 @@
 <p align="center">
   <a href="https://github.com/67-qingshui/deepseek-harness-desktop/releases/latest"><img alt="Latest release" src="https://img.shields.io/badge/version-v2.0.0-0b1120?style=flat-square" /></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-0b1120.svg?style=flat-square" /></a>
-  <img alt="macOS" src="https://img.shields.io/badge/macOS-Apple%20Silicon-0b1120.svg?style=flat-square" />
-  <img alt="Windows" src="https://img.shields.io/badge/Windows-x64-0b1120.svg?style=flat-square" />
-  <img alt="Linux" src="https://img.shields.io/badge/Linux-x64-0b1120.svg?style=flat-square" />
+  <img alt="macOS" src="https://img.shields.io/badge/macOS-Apple%20Silicon%20(M%20系列)-0b1120.svg?style=flat-square" />
+  <img alt="Platform" src="https://img.shields.io/badge/平台-仅%20macOS%20arm64-0b1120.svg?style=flat-square" />
 </p>
 
 DeepSeek Harness Desktop 把官方 DeepSeek Harness 的 Web 体验打包为独立桌面应用，免去手动启动 CLI 与管理本地端口，同时保留完整的 Harness 界面与能力。
@@ -44,7 +43,7 @@ DeepSeek Harness 已提供完整的 Agent 运行时与 Web UI，本项目补齐�
 - 服务就绪后再显示窗口，就绪前展示加载页
 - 单实例窗口与安全的跨域导航
 - 开启沙箱、`contextIsolation`、导航限制
-- 打包可安装的 macOS / Windows / Linux 产物
+- 打包可安装的 macOS 产物
 - 自定义背景与字体颜色（v1.1.0+）
 - Token 用量统计（v2.0.0）
 
@@ -85,15 +84,8 @@ DeepSeek Harness 已提供完整的 Agent 运行时与 Web UI，本项目补齐�
 
 通常只需确认一次。
 
-### Windows / Linux
-
-当前 Release 仅提供 macOS arm64 预编译包。Windows / Linux 可从源码自行打包：
-
-```bash
-npm install
-npm run dist:win    # Windows x64 NSIS
-npm run dist:linux  # Linux x64 AppImage + deb
-```
+> [!NOTE]
+> 本项目**仅支持 macOS Apple Silicon（M 系列芯片）**。当前 Release 只提供 arm64 预编译 dmg，不支持 Intel Mac、Windows 与 Linux。
 
 ## 首次使用（API Key）
 
@@ -138,7 +130,7 @@ DeepSeek Harness Desktop
 
 - 上游 dsh 仍为 RC 版本，可能快速变化
 - 未集成 Apple Developer ID 签名与公证
-- 当前 Release 仅提供 macOS arm64 预编译包
+- **仅支持 macOS Apple Silicon（M 系列芯片）**，不支持 Intel Mac / Windows / Linux
 - 用量费用为估算，以官方账单为准
 - 未集成自动更新
 
