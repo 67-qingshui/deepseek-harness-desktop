@@ -8,10 +8,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/steven-kid/deepseek-harness-desktop"
+    "url": "https://github.com/67-qingshui/deepseek-harness-desktop"
   },
   "scripts": {
     "start": "electron .",
+    "check": "node --check src/main.js && node --check src/window.js && node --check src/tray.js && node --check src/dsh-service.js",
+    "smoke": "DHD_SMOKE=1 electron .",
     "icons": "node scripts/gen-icons.js",
     "dist": "electron-builder",
     "dist:mac": "electron-builder --mac --arm64 --publish never",
