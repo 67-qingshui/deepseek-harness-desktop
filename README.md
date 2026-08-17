@@ -181,7 +181,23 @@ DeepSeek Harness Desktop 旨在解决上述痛点，定位为**极简、轻量�
 - **安全沙箱**：渲染进程 `contextIsolation: true` + `sandbox: true` + 禁用 Node 集成；新窗口与跨域跳转一律交给系统浏览器，壳内只渲染 Harness。
 - **外部链接拦截**：`will-navigate` 与 `setWindowOpenHandler` 拦截跨域导航，交给系统浏览器打开。
 
-### 3.4 自定义背景图片（v1.1.0+）
+### 3.4 主界面布局
+
+应用主界面为原生桌面窗口，内嵌 DeepSeek Harness 的 Web UI。整体结构如下：
+
+![主界面](assets/main-interface.png)
+
+| 区域 | 说明 |
+|---|---|
+| 标题栏 | macOS 隐藏式原生标题栏，叠加交通灯控件（红/黄/绿），自适应深浅色 |
+| 左侧栏 | 会话列表，可切换/新建历史会话 |
+| 中间内容区 | AI 对话与代码生成区，支持语法高亮 |
+| 底部输入区 | 消息输入框与发送按钮 |
+| 系统托盘 | 关闭窗口后驻留托盘，可随时唤出/设置/用量统计/退出 |
+
+> 上图为界面布局示意图，实际内容以 DeepSeek Harness Web UI 为准。
+
+### 3.5 自定义背景图片（v1.1.0+）
 
 通过独立设置窗口配置，**变更实时生效**，不破坏 Harness 原有布局。
 
@@ -195,7 +211,7 @@ DeepSeek Harness Desktop 旨在解决上述痛点，定位为**极简、轻量�
 
 技术实现：通过 `webContents.insertCSS` 注入 `body::before` 伪元素作为背景层（`position:fixed; inset:0; z-index:-1`），不遮挡内容。每次注入前先移除旧注入，避免叠加。
 
-### 3.5 自定义字体颜色（v1.1.0+）
+### 3.6 自定义字体颜色（v1.1.0+）
 
 | 能力 | 说明 |
 |---|---|
@@ -205,7 +221,7 @@ DeepSeek Harness Desktop 旨在解决上述痛点，定位为**极简、轻量�
 
 技术实现：`insertCSS` 覆盖 `body` 及常见文本元素颜色。
 
-### 3.6 Token 用量统计（v2.0.0）
+### 3.7 Token 用量统计（v2.0.0）
 
 参考 [DeepSeek API 官方计费规则](https://api-docs.deepseek.com/zh-cn/quick_start/pricing)，自动采集 API 响应中的 `usage` 字段，确保统计与官方标准一致。
 
@@ -230,7 +246,7 @@ DeepSeek Harness Desktop 旨在解决上述痛点，定位为**极简、轻量�
 
 技术实现：注入 `usage-inject.cjs` 到 Harness 页面，重写 `fetch` 与 `XMLHttpRequest`，解析响应中的 `usage`（兼容 JSON 与 SSE 流式），通过 `postMessage` → `main-preload.cjs` → IPC 上报主进程，写入 `store`，用量窗口读取展示。
 
-### 3.7 跨平台与零构建
+### 3.8 跨平台与零构建
 
 - **跨平台**：macOS arm64 / Windows x64 / Linux x64，同一套代码。
 - **零构建步骤**：纯 ESM（`type: module`），`electron .` 直接运行源码，无需 TypeScript 编译或打包。
@@ -289,6 +305,38 @@ npm start
 | `⌘ ,`（macOS） | 打开自定义外观设置（v1.1.0+） |
 | 右键托盘 → 退出 | 退出应用（回收 dsh 子进程） |
 | 再次打开应用 | 唤出已有窗口（单实例） |
+
+### 4.5 首次使用与 API Key 配置
+
+根据 DeepSeek 官方文档，**首次使用前需配置 API Key**，否则无法调用模型相关功能。
+
+1. 前往 [DeepSeek 开放平台](https://platform.deepseek.com) 登录账号
+2. 在控制台「API Keys 密钥管理」中创建 API Key（以 `sk-` 开头）
+3. 复制生成的 API Key（**仅在创建时单次完整展示，关闭后无法再查看**，请立即妥善保存）
+4. 在本应用打开后，于 DeepSeek Harness Web UI 的**设置页面**中填入 API Key 完成配置
+5. 配置完成后即可正常使用对话、代码生成等功能
+
+> 若已有 DeepSeek API Key，可直接在第 4 步填入，无需重新创建。
+
+### 4.6 安全说明
+
+出于安全考虑，本桌面客户端对用户的 API Key 采取以下原则（参考 DeepSeek 官方安全要求）：
+
+- **API Key 对本项目开发者不可见**：本客户端为第三方非官方封装，不收集、不存储、不上传用户的 API Key 内容。Key 的创建与管理完全在 DeepSeek 官方平台完成，本客户端仅在本地将其传递给内嵌的 dsh 服务使用。
+- **本地存储**：API Key 仅保存在用户本机（由 dsh 管理），不经过任何外部服务器中转。
+- **保管责任**：参考官方条款，用户需妥善保管 API Key，因泄露导致的费用与损失由用户自行承担。建议定期轮换密钥、按需配置 IP 白名单与消费阈值。
+
+> 官方安全建议：禁止将 API Key 硬编码进代码或提交至公开仓库；长期不用的密钥及时销毁。
+
+### 4.7 多客户端使用说明
+
+如果同时在**多个第三方非官方桌面客户端**中使用 DeepSeek Harness：
+
+- **无需重复添加相同的 API Key**：API Key 绑定的是 DeepSeek 账号而非具体客户端，同一账号的 Key 可在任意客户端直接使用。
+- **建议按客户端分别创建 Key 并标记名称**：在 [DeepSeek 开放平台](https://platform.deepseek.com) 控制台为不同客户端创建独立的 API Key，并在密钥标识名称中标注来源（如 `dsh-desktop-mac`、`dsh-cli-linux` 等），方便官方后台**按渠道分别统计用量**，自行查看各客户端的调用次数与费用。
+- **多 Key 隔离**：按客户端区分 Key 后，若某客户端密钥泄露，只需销毁对应 Key，不影响其他客户端使用。
+
+> 此建议参考 DeepSeek 官方「多项目分开密钥、方便分项目统计算力成本」的安全最佳实践。
 
 ---
 
@@ -454,6 +502,12 @@ npm start
 - [更新日志](CHANGELOG.md)：完整版本变更记录
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)：上游项目
 - [DeepSeek API 定价](https://api-docs.deepseek.com/zh-cn/quick_start/pricing)：官方计费规则
+
+---
+
+## 文档维护说明
+
+本文档会根据 DeepSeek 官方更新或本项目新功能发布，**持续同步更新**，确保信息时效性。如发现内容与实际不符或有过时之处，欢迎在 [GitHub Issues](https://github.com/67-qingshui/deepseek-harness-desktop/issues) 反馈。
 
 ---
 
