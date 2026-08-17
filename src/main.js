@@ -14,6 +14,8 @@ import { buildDshLaunch, startDshService } from './dsh-service.js'
 import { getStore } from './store.js'
 import { SkinManager } from './skin-manager.js'
 import { openSettingsWindow } from './settings-window.js'
+import { UsageTracker } from './usage-tracker.js'
+import { openUsageWindow } from './usage-window.js'
 
 /**
  * # DeepSeek Harness Desktop — 主进程入口
@@ -50,6 +52,7 @@ let service
 let hasTray = false
 let store
 let skin
+let usageTracker
 
 /**
  * 应用皮肤到主窗口（skin-manager 注入 CSS）。
@@ -73,6 +76,7 @@ async function launch() {
   // 初始化设置与皮肤管理器（依赖 app.ready）
   store = getStore()
   skin = new SkinManager(store)
+  usageTracker = new UsageTracker(store)
   // 设置变更时实时应用（设置窗口外的变更也生效）
   store.onChange(() => applySkin())
 
@@ -82,6 +86,8 @@ async function launch() {
     onPageReady: (win) => {
       // 每次页面加载完成都重新注入皮肤（含首次加载页 → Harness 切换）
       void skin.apply(win)
+      // 注入 token 用量采集 hook（v2.0.0）
+      usageTracker.inject(win)
     },
   })
 
@@ -94,6 +100,7 @@ async function launch() {
       onShow: () => void showMainWindow({ startupPage: STARTUP_PAGE, serviceUrl: service?.url }),
       onHide: () => hideMainWindow(),
       onSettings: () => openSettings(),
+      onUsage: () => openUsageWindow(),
       onQuit: () => {
         setIsQuitting(true)
         app.quit()

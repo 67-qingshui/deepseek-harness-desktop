@@ -19,10 +19,11 @@ import { Menu, nativeImage, Tray } from 'electron'
  * @param {() => void} opts.onShow    - 点击托盘/「显示窗口」
  * @param {() => void} opts.onHide    - 「隐藏窗口」
  * @param {() => void} opts.onSettings - 「设置…」
+ * @param {() => void} opts.onUsage   - 「用量统计…」
  * @param {() => void} opts.onQuit    - 「退出」
  * @returns {Tray} 托盘实例
  */
-export function createTray({ appName, trayIcon, trayTemplate, onShow, onHide, onSettings, onQuit }) {
+export function createTray({ appName, trayIcon, trayTemplate, onShow, onHide, onSettings, onUsage, onQuit }) {
   // macOS 用 template 图标（自动适配深浅色菜单栏），其他平台用普通 PNG
   const icon = nativeImage.createFromPath(
     process.platform === 'darwin' ? trayTemplate : trayIcon,
@@ -37,6 +38,7 @@ export function createTray({ appName, trayIcon, trayTemplate, onShow, onHide, on
       { label: '隐藏窗口', click: () => onHide?.() },
       { type: 'separator' },
       { label: '设置…', click: () => onSettings?.() },
+      { label: '用量统计…', click: () => onUsage?.() },
       { type: 'separator' },
       { label: '退出', click: () => onQuit?.() },
     ]),

@@ -26,6 +26,11 @@ const DEFAULTS = {
   },
   // 预设配色方案（背景渐变 + 字体颜色的协调组合），供快速切换
   presetScheme: '',
+  // Token 用量记录（v2.0.0 新增）
+  usage: {
+    records: [],   // 每次调用的记录：{ ts, model, prompt, completion, cacheHit, cacheMiss, total }
+    // 累计汇总由 records 计算，不单独持久化（避免不一致）
+  },
 }
 
 // 预设背景渐变方案（纯 CSS 渐变，零二进制依赖）
@@ -98,6 +103,7 @@ export class Store {
           background: { ...DEFAULTS.background, ...(parsed.background || {}) },
           textColor: { ...DEFAULTS.textColor, ...(parsed.textColor || {}) },
           presetScheme: parsed.presetScheme ?? DEFAULTS.presetScheme,
+          usage: { records: Array.isArray(parsed.usage?.records) ? parsed.usage.records.slice(-5000) : [] },
         }
       }
     } catch (err) {
@@ -148,9 +154,53 @@ export class Store {
       background: { ...DEFAULTS.background, ...(data.background || {}) },
       textColor: { ...DEFAULTS.textColor, ...(data.textColor || {}) },
       presetScheme: data.presetScheme ?? '',
+      usage: { records: Array.isArray(data.usage?.records) ? data.usage.records.slice(-5000) : this.data.usage?.records || [] },
     }
     this.save()
     this.notify('*', this.data)
+  }
+
+  /**
+   * 添加一条 token 用量记录（v2.0.0）。
+   * 参考 DeepSeek 官方 usage 字段：prompt_tokens / completion_tokens /
+   * prompt_cache_hit_tokens / prompt_cache_miss_tokens。
+   * @param {Object} rec - { ts, model, prompt, completion, cacheHit, cacheMiss, total }
+   */
+  addUsageRecord(rec) {
+    if (!this.data.usage) this.data.usage = { records: [] }
+    this.data.usage.records.push(rec)
+    // 限制最多 5000 条，避免无限增长
+    if (this.data.usage.records.length > 5000) {
+      this.data.usage.records = this.data.usage.records.slice(-5000)
+    }
+    this.save()
+    this.notify('usage.records', this.data.usage.records)
+  }
+
+  /**
+   * 计算 token 用量累计汇总（基于 records 实时计算，保证与官方一致）。
+   * @returns {Object} { callCount, totalPrompt, totalCompletion, totalCacheHit, totalCacheMiss, totalTokens }
+   */
+  getUsageSummary() {
+    const records = this.data.usage?.records || []
+    return records.reduce(
+      (acc, r) => ({
+        callCount: acc.callCount + 1,
+        totalPrompt: acc.totalPrompt + (r.prompt || 0),
+        totalCompletion: acc.totalCompletion + (r.completion || 0),
+        totalCacheHit: acc.totalCacheHit + (r.cacheHit || 0),
+        totalCacheMiss: acc.totalCacheMiss + (r.cacheMiss || 0),
+        totalTokens: acc.totalTokens + (r.total || 0),
+      }),
+      { callCount: 0, totalPrompt: 0, totalCompletion: 0, totalCacheHit: 0, totalCacheMiss: 0, totalTokens: 0 },
+    )
+  }
+
+  /** 清空用量记录 */
+  clearUsage() {
+    if (this.data.usage) this.data.usage.records = []
+    this.save()
+    this.notify('usage.records', [])
   }
 
   /** 获取全部设置（给设置窗口用） */

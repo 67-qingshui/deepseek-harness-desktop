@@ -12,8 +12,12 @@ asarUnpack:
 files:
   - src/**/*
   - settings/**/*
+  - usage/**/*
   - assets/**
   - settings-preload.cjs
+  - main-preload.cjs
+  - usage-inject.cjs
+  - usage-preload.cjs
   - package.json
 mac:
   category: public.app-category.developer-tools

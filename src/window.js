@@ -1,4 +1,5 @@
-import { BrowserWindow, Menu, shell } from 'electron'
+import { BrowserWindow, Menu, shell, app } from 'electron'
+import path from 'node:path'
 
 /**
  * # 主窗口管理
@@ -70,6 +71,7 @@ export function createMainWindow({ startupPage, onPageReady }) {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
+      preload: path.join(app.getAppPath(), 'main-preload.cjs'),
       spellcheck: false,
     },
   })
