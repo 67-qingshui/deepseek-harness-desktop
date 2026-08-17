@@ -4,7 +4,7 @@
 
 设计理念：**简单、轻量、好用**。不做任何 UI 注入、不改写 Harness，只提供「宿主能力」——
 
-- 自动启动 / 停止本地 Harness 服务（`npx @deepseek-ai/dsh web`）
+- 自动启动 / 停止本地 Harness 服务（**内嵌** `@deepseek-ai/dsh`，用应用自带的 Electron 运行，**无需系统安装 Node/npm**）
 - 服务就绪前显示干净的加载页，就绪后自动载入
 - 单实例窗口（重复打开只会唤出已有窗口）
 - 关闭窗口 = 最小化到系统托盘；从托盘可随时唤出 / 退出
@@ -31,15 +31,15 @@ deepseek-harness-desktop/
 
 ## 环境要求
 
-- **Node.js ≥ 18**（开发 / 打包用）
-- **Apple Silicon Mac**（构建 arm64 dmg）；也支持 Windows x64 / Linux x64
-- 首次启动需联网：`npx @deepseek-ai/dsh web` 会自动拉取 `@deepseek-ai/dsh`
-  （若已全局安装 `npm i -g @deepseek-ai/dsh`，可直接离线启动）
+- **运行已安装的应用：无需任何环境**。DeepSeek Harness（`@deepseek-ai/dsh`）已作为依赖打包进应用，
+  由应用自带的 Electron 运行；下载 dmg 后开箱即用，首次启动也**不联网下载**任何东西。
+- **仅开发 / 打包时需要 Node.js ≥ 18**：用于 `npm install` 与 `electron-builder`。
+- **Apple Silicon Mac** 构建 arm64 dmg；也支持 Windows x64 / Linux x64。
 
 ## 安装与运行
 
 ```bash
-# 1. 安装依赖（electron 体积较大，请耐心等待）
+# 1. 安装依赖（electron / dsh 体积较大，请耐心等待）
 npm install
 
 # 2.（可选）生成图标（assets/ 下已附带，可跳过）
@@ -69,12 +69,17 @@ npm run dist:linux
 
 ## 常见问题
 
-**Q：启动时提示「DeepSeek Harness 无法启动」？**
-A：多半是首次联网拉取 `@deepseek-ai/dsh` 较慢或失败。可先手动 `npm i -g @deepseek-ai/dsh` 再启动；或检查网络 / 代理。
+**Q：应用真的完全不需要系统 Node 吗？**
+A：是的。运行时由应用自带的 Electron 二进制直接执行内嵌的 `dsh`（`@deepseek-ai/dsh/lib/bin.js`），
+不调用系统的 `node` / `npx`。仅在你**从源码构建**时才需要本机装 Node.js。
 
-**Q：想用本机已安装的 dsh，而不是 npx 拉取？**
-A：编辑 `src/main.js` 中 `startDshService` 的 `command` / `args` 即可，例如改为
-`command: 'dsh', args: ['web', '--host', '127.0.0.1']`。
+**Q：启动时提示「DeepSeek Harness 无法启动」？**
+A：多半是内嵌 dsh 初始化失败（如端口被占用、权限受限）。查看弹窗中的详细输出定位；
+若你改过启动方式，可检查 `src/main.js` 的 `buildDshLaunch()`。
+
+**Q：想改用本机已安装的 dsh，而不是内嵌版本？**
+A：编辑 `src/main.js` 中 `buildDshLaunch()` 的返回值即可，例如改为
+`{ command: 'dsh', args: ['web', '--host', '127.0.0.1'] }`（需系统已 `npm i -g @deepseek-ai/dsh`）。
 
 **Q：macOS 提示「无法验证开发者」？**
 A：这是未公证所致。前往「系统设置 → 隐私与安全性」，在拦截条目下点击「仍要打开」，通常只需一次。

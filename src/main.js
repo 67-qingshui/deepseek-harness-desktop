@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import { createRequire } from 'node:module'
 import {
   app,
   BrowserWindow,
@@ -26,6 +27,36 @@ let isQuitting = false
 const SMOKE = !!process.env.DHD_SMOKE
 
 app.setName(APP_NAME)
+
+// 解析内嵌的 dsh 入口（已作为依赖打进 app 的 node_modules / asar）。
+// 运行时用应用自带的 Electron 二进制（process.execPath）加 --expose-internals 直接跑 dsh 的
+// bin，无需系统安装 Node / npm，也不在首次启动时联网下载。
+const requireResolve = createRequire(import.meta.url)
+function resolveDshBin() {
+  try {
+    return requireResolve.resolve('@deepseek-ai/dsh/lib/bin.js')
+  } catch {
+    return null
+  }
+}
+
+/** 构造拉起 DeepSeek Harness 的 command + args；找不到内嵌 dsh 时退回系统 npx（需 Node）。 */
+function buildDshLaunch() {
+  const bin = resolveDshBin()
+  if (bin) {
+    // 用应用自带的 Electron 二进制直接跑内嵌的 dsh bin（node 运行时由 Electron 提供，
+    // 无需系统安装 Node/npm）。用 `web` 子命令形式（--profile web 的别名），避免根命令的
+    // 变参 [args...] 把 --host/--port 一并吞掉。
+    return {
+      command: process.execPath,
+      args: [bin, 'web', '--host', '127.0.0.1', '--port', '0'],
+    }
+  }
+  return {
+    command: 'npx',
+    args: ['@deepseek-ai/dsh', 'web', '--host', '127.0.0.1', '--port', '0'],
+  }
+}
 
 /** 显示主窗口：缺失则创建并直接载入服务地址；最小化则恢复；最后置顶 */
 async function showMainWindow() {
@@ -135,9 +166,10 @@ async function launch() {
     return
   }
 
+  const launch = buildDshLaunch()
   service = startDshService({
-    command: 'npx',
-    args: ['@deepseek-ai/dsh', 'web', '--host', '127.0.0.1'],
+    command: launch.command,
+    args: launch.args,
     environment: { ...process.env, DSH_DESKTOP: '1' },
   })
 

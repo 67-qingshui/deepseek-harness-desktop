@@ -4,6 +4,11 @@ artifactName: DeepSeek-Harness-Desktop-${version}-${arch}.${ext}
 directories:
   output: release
   buildResources: assets
+asar: true
+# dsh 作为子进程入口被 spawn 执行，解包到 app.asar.unpacked 避免 asar 内脚本
+# 执行的边界问题（__dirname 定位、子进程、原生模块等）。其余依赖仍走 asar。
+asarUnpack:
+  - node_modules/@deepseek-ai/dsh/**/*
 files:
   - src/**/*
   - assets/**
