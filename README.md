@@ -151,10 +151,6 @@ DeepSeek Harness Desktop 旨在解决上述痛点，定位为**极简、轻量�
 - **好用**：开箱即用、交互直观、设置实时生效、用量自动采集。
 - **不侵入**：不修改 Harness 本身代码，所有自定义通过 CSS 注入叠加，可随时关闭恢复原样。
 
-### 2.5 参考与致谢
-
-项目架构参考了 [steven-kid/deepseek-harness-desktop](https://github.com/steven-kid/deepseek-harness-desktop) 的整体结构与实现思路（子进程生命周期、就绪检测、单实例窗口、托盘交互），在此基础上做了自包含 dsh、模块化拆分、外观自定义与用量统计的扩展。
-
 ---
 
 ## 3. 核心功能与特性描述
@@ -181,23 +177,7 @@ DeepSeek Harness Desktop 旨在解决上述痛点，定位为**极简、轻量�
 - **安全沙箱**：渲染进程 `contextIsolation: true` + `sandbox: true` + 禁用 Node 集成；新窗口与跨域跳转一律交给系统浏览器，壳内只渲染 Harness。
 - **外部链接拦截**：`will-navigate` 与 `setWindowOpenHandler` 拦截跨域导航，交给系统浏览器打开。
 
-### 3.4 主界面布局
-
-应用主界面为原生桌面窗口，内嵌 DeepSeek Harness 的 Web UI。整体结构如下：
-
-![主界面](assets/main-interface.png)
-
-| 区域 | 说明 |
-|---|---|
-| 标题栏 | macOS 隐藏式原生标题栏，叠加交通灯控件（红/黄/绿），自适应深浅色 |
-| 左侧栏 | 会话列表，可切换/新建历史会话 |
-| 中间内容区 | AI 对话与代码生成区，支持语法高亮 |
-| 底部输入区 | 消息输入框与发送按钮 |
-| 系统托盘 | 关闭窗口后驻留托盘，可随时唤出/设置/用量统计/退出 |
-
-> 上图为界面布局示意图，实际内容以 DeepSeek Harness Web UI 为准。
-
-### 3.5 自定义背景图片（v1.1.0+）
+### 3.4 自定义背景图片（v1.1.0+）
 
 通过独立设置窗口配置，**变更实时生效**，不破坏 Harness 原有布局。
 
@@ -211,7 +191,7 @@ DeepSeek Harness Desktop 旨在解决上述痛点，定位为**极简、轻量�
 
 技术实现：通过 `webContents.insertCSS` 注入 `body::before` 伪元素作为背景层（`position:fixed; inset:0; z-index:-1`），不遮挡内容。每次注入前先移除旧注入，避免叠加。
 
-### 3.6 自定义字体颜色（v1.1.0+）
+### 3.5 自定义字体颜色（v1.1.0+）
 
 | 能力 | 说明 |
 |---|---|
@@ -221,7 +201,7 @@ DeepSeek Harness Desktop 旨在解决上述痛点，定位为**极简、轻量�
 
 技术实现：`insertCSS` 覆盖 `body` 及常见文本元素颜色。
 
-### 3.7 Token 用量统计（v2.0.0）
+### 3.6 Token 用量统计（v2.0.0）
 
 参考 [DeepSeek API 官方计费规则](https://api-docs.deepseek.com/zh-cn/quick_start/pricing)，自动采集 API 响应中的 `usage` 字段，确保统计与官方标准一致。
 
@@ -246,7 +226,7 @@ DeepSeek Harness Desktop 旨在解决上述痛点，定位为**极简、轻量�
 
 技术实现：注入 `usage-inject.cjs` 到 Harness 页面，重写 `fetch` 与 `XMLHttpRequest`，解析响应中的 `usage`（兼容 JSON 与 SSE 流式），通过 `postMessage` → `main-preload.cjs` → IPC 上报主进程，写入 `store`，用量窗口读取展示。
 
-### 3.8 跨平台与零构建
+### 3.7 跨平台与零构建
 
 - **跨平台**：macOS arm64 / Windows x64 / Linux x64，同一套代码。
 - **零构建步骤**：纯 ESM（`type: module`），`electron .` 直接运行源码，无需 TypeScript 编译或打包。
