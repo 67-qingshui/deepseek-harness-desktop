@@ -84,6 +84,16 @@ DeepSeek Harness 已提供完整的 Agent 运行时与 Web UI，本项目补齐�
 
 通常只需确认一次。
 
+**或使用命令行清除隔离标记（可选）：**
+
+```bash
+xattr -cr "/Applications/DeepSeek Harness Desktop.app"
+```
+
+> **原理**：macOS 会为从互联网下载的应用自动打上 `com.apple.quarantine` 隔离扩展属性，Gatekeeper 据此拦截未公证的应用。`xattr -c` 清除扩展属性，`-r` 递归处理应用包内所有文件；清除后 Gatekeeper 不再拦截，可直接打开。
+>
+> ⚠️ 此命令会绕过 Gatekeeper 的安全检查，请**仅对信任来源**的应用使用。更稳妥的做法仍是上面手动点击「仍要打开」（保留隔离标记）。
+
 > [!NOTE]
 > 本项目**仅支持 macOS Apple Silicon（M 系列芯片）**。当前 Release 只提供 arm64 预编译 dmg，不支持 Intel Mac、Windows 与 Linux。
 
