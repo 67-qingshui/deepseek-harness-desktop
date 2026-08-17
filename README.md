@@ -97,6 +97,15 @@ xattr -cr "/Applications/DeepSeek Harness Desktop.app"
 > [!NOTE]
 > 本项目**仅支持 macOS Apple Silicon（M 系列芯片）**。当前 Release 只提供 arm64 预编译 dmg，不支持 Intel Mac、Windows 与 Linux。
 
+### 为什么未签名与未公证
+
+既然「仍要打开」和 `xattr -cr` 都源于应用未签名、未公证，这里说明原因：
+
+- **需要付费的开发者账号**：申请 Apple Developer ID 签名与公证必须加入 Apple Developer Program（年费 $99/年），本项目是社区非官方封装，没有开发者账号。
+- **开源项目惯例**：大量开源 macOS 应用同样跳过签名与公证，代价就是上面提到的首次打开需手动放行。
+
+> 如你有 Apple Developer 账号，想自行重签名并重新分发，可下载源码后操作。但**重新分发时须遵守 [MIT License](LICENSE) 并标注本项目出处**（保留版权声明与仓库链接）。
+
 ## 首次使用（API Key）
 
 调用模型功能前需配置 API Key：
@@ -139,20 +148,10 @@ DeepSeek Harness Desktop
 ## 已知限制
 
 - 上游 dsh 仍为 RC 版本，可能快速变化
-- 未集成 Apple Developer ID 签名与公证
+- 未集成 Apple Developer ID 签名与公证（原因见上文「安装 → 为什么未签名与未公证」）
 - **仅支持 macOS Apple Silicon（M 系列芯片）**，不支持 Intel Mac / Windows / Linux
 - 用量费用为估算，以官方账单为准
 - 未集成自动更新
-
-## 为什么未签名与未公证
-
-本项目未使用 Apple Developer ID 签名，也未做 Apple 公证（Notarization），原因如下：
-
-- **需要付费的开发者账号**：申请签名与公证必须加入 Apple Developer Program（年费 $99/年），而本项目是社区非官方封装，没有开发者账号。
-- **非官方社区项目**：本项目与 DeepSeek 官方及任何商业主体无关，属于个人开源项目，通常不申请付费证书。
-- **开源项目惯例**：大量开源 macOS 应用同样跳过签名与公证，代价是首次打开需手动「仍要打开」，或使用 `xattr -cr` 清除隔离标记。
-
-> 如你有 Apple Developer 账号，可自行下载源码重签名后使用。本项目不提供签名与公证，敬请理解。
 
 ## License
 
