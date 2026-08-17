@@ -144,6 +144,16 @@ DeepSeek Harness Desktop
 - 用量费用为估算，以官方账单为准
 - 未集成自动更新
 
+## 为什么未签名与未公证
+
+本项目未使用 Apple Developer ID 签名，也未做 Apple 公证（Notarization），原因如下：
+
+- **需要付费的开发者账号**：申请签名与公证必须加入 Apple Developer Program（年费 $99/年），而本项目是社区非官方封装，没有开发者账号。
+- **非官方社区项目**：本项目与 DeepSeek 官方及任何商业主体无关，属于个人开源项目，通常不申请付费证书。
+- **开源项目惯例**：大量开源 macOS 应用同样跳过签名与公证，代价是首次打开需手动「仍要打开」，或使用 `xattr -cr` 清除隔离标记。
+
+> 如你有 Apple Developer 账号，可自行下载源码重签名后使用。本项目不提供签名与公证，敬请理解。
+
 ## License
 
 桌面壳基于 [MIT License](LICENSE) 开源。内嵌的 `@deepseek-ai/dsh` 同为 MIT 许可。
