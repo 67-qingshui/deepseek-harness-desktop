@@ -4,6 +4,8 @@
 
 非官方的社区封装。设计理念：**简单、轻量、好用**——不改写 Harness 本身代码，通过 CSS 注入提供「宿主能力 + 个性化」。DeepSeek Harness（`@deepseek-ai/dsh`）已作为依赖内嵌进应用，由应用自带的 Electron 运行，**最终用户无需预装 Node.js，下载安装包后即可直接使用**。
 
+> **提供两个版本**：[v1.0.0 纯净版](https://github.com/67-qingshui/deepseek-harness-desktop/releases/tag/v1.0.0)（极简宿主壳）与 [v1.1.0 DIY 背景版](https://github.com/67-qingshui/deepseek-harness-desktop/releases/tag/v1.1.0)（可自定义背景与字体颜色）。详见 [版本选择指南](VERSIONS.md)。
+
 > **v1.1.0 新增**：自定义背景图片（上传本地图片 / 预设图库）与自定义字体颜色（自由调色 / 预设方案），通过独立设置窗口配置，实时生效。
 
 ---
