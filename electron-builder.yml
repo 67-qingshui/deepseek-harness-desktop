@@ -11,7 +11,9 @@ asarUnpack:
   - node_modules/@deepseek-ai/dsh/**/*
 files:
   - src/**/*
+  - settings/**/*
   - assets/**
+  - settings-preload.cjs
   - package.json
 mac:
   category: public.app-category.developer-tools

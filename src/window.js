@@ -46,9 +46,10 @@ export function setIsQuitting(value) {
  *
  * @param {Object} opts
  * @param {string} opts.startupPage - 加载页 HTML 路径
+ * @param {(win: BrowserWindow) => void} [opts.onPageReady] - 页面加载完成回调（did-finish-load）
  * @returns {Promise<void>} 加载页加载完成的 Promise
  */
-export function createMainWindow({ startupPage }) {
+export function createMainWindow({ startupPage, onPageReady }) {
   // Windows：移除应用菜单栏
   if (process.platform === 'win32') Menu.setApplicationMenu(null)
 
@@ -93,6 +94,11 @@ export function createMainWindow({ startupPage }) {
 
   // 首次渲染就绪后再显示，避免白屏
   mainWindow.once('ready-to-show', () => mainWindow?.show())
+
+  // 页面加载完成：触发回调（skin-manager 注入皮肤）
+  mainWindow.webContents.on('did-finish-load', () => {
+    if (mainWindow && !mainWindow.isDestroyed()) onPageReady?.(mainWindow)
+  })
 
   // 关闭窗口：有托盘且非退出时，最小化到托盘而非真正关闭
   mainWindow.on('close', (event) => {

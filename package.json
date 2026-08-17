@@ -1,7 +1,7 @@
 {
   "name": "deepseek-harness-desktop",
-  "version": "1.0.0",
-  "description": "极简桌面壳：把 DeepSeek Harness 的 Web UI 装进原生窗口，自动启停本地服务，轻量开箱即用。",
+  "version": "1.1.0",
+  "description": "极简桌面壳：把 DeepSeek Harness 的 Web UI 装进原生窗口，自动启停本地服务，支持自定义背景与字体颜色，轻量开箱即用。",
   "type": "module",
   "main": "src/main.js",
   "author": "DeepSeek Harness Desktop Contributors",
@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "electron .",
-    "check": "node --check src/main.js && node --check src/window.js && node --check src/tray.js && node --check src/dsh-service.js",
+    "check": "node --check src/main.js && node --check src/window.js && node --check src/tray.js && node --check src/dsh-service.js && node --check src/store.js && node --check src/skin-manager.js && node --check src/settings-window.js && node --check settings-preload.cjs",
     "smoke": "DHD_SMOKE=1 electron .",
     "icons": "node scripts/gen-icons.js",
     "dist": "electron-builder",

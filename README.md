@@ -2,13 +2,16 @@
 
 > 极简桌面壳：把 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Web UI 装进原生窗口，**自动启停本地服务，开箱即用**。
 
-非官方的社区封装。设计理念：**简单、轻量、好用**——不做任何 UI 注入、不改写 Harness，只提供「宿主能力」。DeepSeek Harness（`@deepseek-ai/dsh`）已作为依赖内嵌进应用，由应用自带的 Electron 运行，**最终用户无需预装 Node.js，下载安装包后即可直接使用**。
+非官方的社区封装。设计理念：**简单、轻量、好用**——不改写 Harness 本身代码，通过 CSS 注入提供「宿主能力 + 个性化」。DeepSeek Harness（`@deepseek-ai/dsh`）已作为依赖内嵌进应用，由应用自带的 Electron 运行，**最终用户无需预装 Node.js，下载安装包后即可直接使用**。
+
+> **v1.1.0 新增**：自定义背景图片（上传本地图片 / 预设图库）与自定义字体颜色（自由调色 / 预设方案），通过独立设置窗口配置，实时生效。
 
 ---
 
 ## 目录
 
 - [功能特性](#功能特性)
+- [自定义外观](#自定义外观)
 - [环境要求](#环境要求)
 - [项目依赖](#项目依赖)
 - [目录结构](#目录结构)
@@ -32,6 +35,47 @@
 - **安全沙箱**：渲染进程 `contextIsolation` + `sandbox` + 禁用 Node 集成，跨域跳转一律交给系统浏览器。
 - **零构建步骤**：纯 ESM（`type: module`），`electron .` 直接运行源码，无需 TypeScript 编译或打包。
 - **跨平台**：支持 macOS（arm64）、Windows（x64）、Linux（x64）。
+- **自定义背景图片**（v1.1.0）：上传本地图片或从 6 套预设渐变图库中选择，自动适配屏幕分辨率（`cover`），可调不透明度与模糊。
+- **自定义字体颜色**（v1.1.0）：颜色选择器自由调色 + 7 套预设颜色方案，实时生效。
+- **快速配色方案**（v1.1.0）：一键切换协调的「背景 + 字体颜色」组合。
+
+## 自定义外观
+
+v1.1.0 起支持自定义背景图片与字体颜色，通过独立设置窗口配置，**变更实时生效**，不破坏 Harness 原有布局。
+
+### 打开设置
+
+- **托盘菜单** → 「设置…」
+- **macOS 快捷键** `⌘ ,`（系统惯例）
+
+### 背景图片
+
+| 类型 | 说明 |
+|---|---|
+| 无 | 不使用背景（默认） |
+| 预设图库 | 6 套纯 CSS 渐变（深海 / 极光 / 日落 / 森林 / 墨黑 / 雅紫），零二进制依赖 |
+| 本地图片 | 上传 jpg/png/webp/gif，自动复制到 `userData/backgrounds/` 自包含管理 |
+
+- 背景以 `body::before` 叠加（`position:fixed; inset:0; z-index:-1`），`background-size:cover` 自动适配任意分辨率
+- 可调**不透明度**（0–100%）与**模糊**（0–40px）
+
+### 字体颜色
+
+- **自由调色**：原生颜色选择器（`input[type=color]`），任意 HEX 值
+- **预设方案**：浅霜白 / 暖白 / 青绿 / 天蓝 / 淡紫 / 琥珀 / 玫红
+- 通过 `insertCSS` 覆盖 `body` 及常见文本元素颜色
+
+### 设置存储
+
+设置持久化在 `userData/settings.json`，包含：
+
+```json
+{
+  "background": { "type": "preset", "preset": "deep-sea", "image": "", "opacity": 0.85, "blur": 0 },
+  "textColor": { "enabled": true, "color": "#cfe1f5" },
+  "presetScheme": "deep-sea"
+}
+```
 
 ## 环境要求
 
@@ -66,13 +110,21 @@
 deepseek-harness-desktop/
 ├── package.json            # ESM 项目配置，无构建步骤
 ├── electron-builder.yml    # 打包配置（dmg / nsis / AppImage+deb）
+├── settings-preload.cjs    # 设置窗口的 preload 桥接（CJS）
 ├── README.md               # 本文档
 ├── src/
-│   ├── main.js             # 主进程入口：单实例锁 / 生命周期 / 组装
+│   ├── main.js             # 主进程入口：单实例锁 / 生命周期 / 组装 / 皮肤集成
 │   ├── window.js           # 主窗口：创建 / 选项 / 显示 / 链接拦截 / 关闭到托盘
-│   ├── tray.js             # 系统托盘：图标 / 右键菜单 / 点击唤出
+│   ├── tray.js             # 系统托盘：图标 / 右键菜单（含设置入口）/ 点击唤出
 │   ├── dsh-service.js      # dsh 子进程：启动配置 / 就绪检测 / 退出回收
+│   ├── store.js            # 用户设置持久化（背景/字体颜色/预设方案）
+│   ├── skin-manager.js     # 背景与字体颜色 CSS 注入（insertCSS）
+│   ├── settings-window.js  # 独立设置窗口 + IPC 处理
 │   └── startup.html        # 干净的加载页（服务就绪前显示）
+├── settings/               # 设置窗口界面
+│   ├── settings.html       # 设置页（背景图库 / 颜色选择器 / 配色方案）
+│   ├── settings.css        # 设置页样式（深色主题，响应式）
+│   └── settings.js         # 设置页逻辑（实时预览 + IPC 通信）
 ├── assets/                 # 图标资源
 │   ├── icon.png            # 应用图标（512×512）
 │   ├── icon.icns           # macOS 图标
@@ -83,7 +135,7 @@ deepseek-harness-desktop/
     └── gen-icons.js         # 零依赖生成鲸鱼主题图标
 ```
 
-**模块划分说明**：参考 `steven-kid/deepseek-harness-desktop` 的结构，按职责拆分——`window.js` 管窗口、`tray.js` 管托盘、`dsh-service.js` 管 dsh 子进程、`main.js` 只做入口与组装，各模块单一职责、互不耦合。
+**模块划分说明**：参考 `steven-kid/deepseek-harness-desktop` 的结构，按职责拆分——`window.js` 管窗口、`tray.js` 管托盘、`dsh-service.js` 管 dsh 子进程、`store.js` 管设置持久化、`skin-manager.js` 管 CSS 注入、`settings-window.js` 管设置窗口、`main.js` 只做入口与组装，各模块单一职责、互不耦合。
 
 ## 安装步骤
 
@@ -124,6 +176,8 @@ npm start
 | 点击托盘图标 | 唤出主窗口 |
 | 右键托盘 → 显示窗口 | 唤出主窗口 |
 | 右键托盘 → 隐藏窗口 | 隐藏主窗口 |
+| 右键托盘 → 设置… | 打开自定义外观设置（背景 / 字体颜色） |
+| `⌘ ,`（macOS） | 打开自定义外观设置 |
 | 右键托盘 → 退出 | 退出应用（回收 dsh 子进程） |
 | 再次打开应用 | 唤出已有窗口（单实例） |
 | macOS Dock 点击 | 唤出主窗口 |

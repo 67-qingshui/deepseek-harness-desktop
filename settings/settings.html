@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>设置</title>
+  <link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+  <div class="titlebar-drag"></div>
+
+  <main class="container">
+    <header class="header">
+      <h1>设置</h1>
+      <p class="subtitle">自定义背景图片与字体颜色，变更实时生效</p>
+    </header>
+
+    <!-- 背景图片 -->
+    <section class="card">
+      <div class="card-title">
+        <span class="dot dot-bg"></span>
+        <h2>背景图片</h2>
+      </div>
+
+      <div class="field-row">
+        <label class="field-label">背景类型</label>
+        <div class="seg" id="bg-type">
+          <button data-type="none" class="seg-btn active">无</button>
+          <button data-type="preset" class="seg-btn">预设图库</button>
+          <button data-type="image" class="seg-btn">本地图片</button>
+        </div>
+      </div>
+
+      <!-- 预设图库 -->
+      <div class="field-block" id="block-preset" hidden>
+        <label class="field-label">预设方案</label>
+        <div class="preset-grid" id="preset-grid"></div>
+      </div>
+
+      <!-- 本地图片 -->
+      <div class="field-block" id="block-image" hidden>
+        <label class="field-label">选择图片</label>
+        <div class="image-picker">
+          <div class="image-preview" id="image-preview">
+            <span class="placeholder">未选择图片</span>
+          </div>
+          <div class="image-actions">
+            <button class="btn" id="btn-pick">选择图片…</button>
+            <button class="btn btn-ghost" id="btn-clear-image">清除</button>
+          </div>
+        </div>
+        <p class="hint">支持 jpg / png / webp / gif，自动适配屏幕分辨率（cover）</p>
+      </div>
+
+      <!-- 不透明度 + 模糊 -->
+      <div class="field-block" id="block-adjust">
+        <div class="slider-row">
+          <label class="field-label">不透明度</label>
+          <input type="range" id="slider-opacity" min="0" max="100" value="85" />
+          <span class="slider-val" id="val-opacity">85%</span>
+        </div>
+        <div class="slider-row">
+          <label class="field-label">模糊</label>
+          <input type="range" id="slider-blur" min="0" max="40" value="0" />
+          <span class="slider-val" id="val-blur">0px</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 字体颜色 -->
+    <section class="card">
+      <div class="card-title">
+        <span class="dot dot-text"></span>
+        <h2>字体颜色</h2>
+        <label class="switch">
+          <input type="checkbox" id="switch-textcolor" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="field-block" id="block-textcolor">
+        <label class="field-label">自由调色</label>
+        <div class="color-row">
+          <input type="color" id="color-picker" value="#e8eef7" />
+          <span class="color-val" id="color-val">#E8EEF7</span>
+        </div>
+
+        <label class="field-label" style="margin-top:16px">预设方案</label>
+        <div class="color-preset-grid" id="textcolor-grid"></div>
+      </div>
+    </section>
+
+    <!-- 预设配色组合 -->
+    <section class="card">
+      <div class="card-title">
+        <span class="dot dot-scheme"></span>
+        <h2>快速配色方案</h2>
+      </div>
+      <p class="hint">一键切换协调的「背景 + 字体颜色」组合</p>
+      <div class="scheme-grid" id="scheme-grid"></div>
+    </section>
+
+    <footer class="footer">
+      <span class="status" id="status">所有变更已实时生效</span>
+    </footer>
+  </main>
+
+  <script src="settings.js"></script>
+</body>
+</html>
