@@ -115,7 +115,8 @@ xattr -cr "/Applications/DeepSeek Harness Desktop.app"
 
 > [!NOTE]
 > **安全**：API Key 由 dsh 在本地管理，本客户端不收集、不存储、不上传，对开发者不可见。
-> **多客户端**：同一账号的 Key 可在多个客户端直接使用，无需重复添加。建议按客户端分别创建 Key 并标记名称（如 `desktop-mac`），方便官方后台按渠道统计用量。
+>
+> **多客户端**：同一账号的 Key 可在多个客户端直接使用，无需重复添加。个人建议多个客户端用多个 Key，方便官方后台分别统计各客户端用量——例如给本客户端单独建一个名为 `DeepSeek Harness Desktop` 的 Key。
 
 ## 安全模型
 
