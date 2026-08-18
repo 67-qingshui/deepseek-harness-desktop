@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/67-qingshui/deepseek-harness-desktop/releases/latest"><img alt="Latest release" src="https://img.shields.io/badge/version-v2.0.0-0b1120?style=flat-square" /></a>
+  <a href="https://github.com/67-qingshui/deepseek-harness-desktop/releases/latest"><img alt="Latest release" src="https://img.shields.io/badge/version-v2.1.0-0b1120?style=flat-square" /></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-0b1120.svg?style=flat-square" /></a>
   <img alt="macOS" src="https://img.shields.io/badge/macOS-Apple%20Silicon%20(M%20系列)-0b1120.svg?style=flat-square" />
   <img alt="Platform" src="https://img.shields.io/badge/平台-仅%20macOS%20arm64-0b1120.svg?style=flat-square" />
@@ -24,15 +24,16 @@ DeepSeek Harness Desktop 把官方 DeepSeek Harness 的 Web 体验打包为独�
 
 ## 下载
 
-三个版本均可独立使用，高版本包含低版本全部功能。
+四个版本均可独立使用，高版本包含低版本全部功能。
 
 | 版本 | 特色 | 下载 |
 | --- | --- | --- |
 | v1.0.0 纯净版 | 极简宿主壳，零自定义 | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v1.0.0/DeepSeek-Harness-Desktop-1.0.0-arm64.dmg) |
 | v1.1.0 DIY 背景版 | 自定义背景图片与字体颜色 | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v1.1.0/DeepSeek-Harness-Desktop-1.1.0-arm64.dmg) |
-| v2.0.0 用量统计版 | 增加 Token 用量统计（最新） | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v2.0.0/DeepSeek-Harness-Desktop-2.0.0-arm64.dmg) |
+| v2.0.0 用量统计版 | 增加 Token 用量统计 | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v2.0.0/DeepSeek-Harness-Desktop-2.0.0-arm64.dmg) |
+| v2.1.0 更新提示版 | 增加新版本更新提示（最新） | [⬇ dmg](https://github.com/67-qingshui/deepseek-harness-desktop/releases/download/v2.1.0/DeepSeek-Harness-Desktop-2.1.0-arm64.dmg) |
 
-所有版本均可在 [Releases 页](https://github.com/67-qingshui/deepseek-harness-desktop/releases) 查看。不确定选哪个就下 v2.0.0。
+所有版本均可在 [Releases 页](https://github.com/67-qingshui/deepseek-harness-desktop/releases) 查看。不确定选哪个就下 v2.1.0。
 
 ## 为什么有这个项目
 
@@ -69,6 +70,11 @@ DeepSeek Harness 已提供完整的 Agent 运行时与 Web UI，本项目补齐�
 - 统计输入/输出/缓存命中 Token、调用次数、缓存命中率、估算费用
 - 可视化：折线图趋势 + 柱状图占比 + 明细列表，5 秒自动刷新
 - 入口：托盘「用量统计…」
+
+**v2.1.0**
+- 启动时自动检查 GitHub 是否有新版本，有则弹窗提示
+- 三个选项：**更新**（跳转 Release 页）/ **稍后更新** / **不更新**（确认后永久不再提示，后续自行前往 GitHub 下载）
+- 仅在应用内提示，不在应用内更新，更新动作跳转 GitHub
 
 ## 安装
 

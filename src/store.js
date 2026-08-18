@@ -31,6 +31,11 @@ const DEFAULTS = {
     records: [],   // 每次调用的记录：{ ts, model, prompt, completion, cacheHit, cacheMiss, total }
     // 累计汇总由 records 计算，不单独持久化（避免不一致）
   },
+  // 更新提示（v2.1.0 新增）
+  update: {
+    promptSkipped: false,   // 用户选择「不更新」后置 true，永久不再提示
+    skippedVersion: '',     // 记录跳过时的版本号（仅作参考）
+  },
 }
 
 // 预设背景渐变方案（纯 CSS 渐变，零二进制依赖）
@@ -104,6 +109,7 @@ export class Store {
           textColor: { ...DEFAULTS.textColor, ...(parsed.textColor || {}) },
           presetScheme: parsed.presetScheme ?? DEFAULTS.presetScheme,
           usage: { records: Array.isArray(parsed.usage?.records) ? parsed.usage.records.slice(-5000) : [] },
+          update: { ...DEFAULTS.update, ...(parsed.update || {}) },
         }
       }
     } catch (err) {
@@ -155,6 +161,7 @@ export class Store {
       textColor: { ...DEFAULTS.textColor, ...(data.textColor || {}) },
       presetScheme: data.presetScheme ?? '',
       usage: { records: Array.isArray(data.usage?.records) ? data.usage.records.slice(-5000) : this.data.usage?.records || [] },
+      update: { ...DEFAULTS.update, ...(data.update || {}) },
     }
     this.save()
     this.notify('*', this.data)

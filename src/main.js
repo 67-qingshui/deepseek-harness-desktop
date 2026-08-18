@@ -16,6 +16,7 @@ import { SkinManager } from './skin-manager.js'
 import { openSettingsWindow } from './settings-window.js'
 import { UsageTracker } from './usage-tracker.js'
 import { openUsageWindow } from './usage-window.js'
+import { checkForUpdates } from './update-checker.js'
 
 /**
  * # DeepSeek Harness Desktop — 主进程入口
@@ -150,6 +151,15 @@ async function launch() {
     })
     app.quit()
   }
+
+  // 检查更新（v2.1.0）：后台检查 GitHub 新版本，不阻塞启动
+  void checkForUpdates({
+    shouldSkip: () => store.get('update.promptSkipped') === true,
+    onSkipForever: (version) => {
+      store.set('update.promptSkipped', true)
+      store.set('update.skippedVersion', version)
+    },
+  })
 }
 
 // 单实例锁：重复打开只唤出已有窗口
